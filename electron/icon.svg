@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Background -->
+  <rect width="256" height="256" rx="52" fill="#315031"/>
+
+  <!-- Large leaf (white, main) -->
+  <path d="M84 216
+    C84 216 56 152 76 100
+    C96 48 168 32 212 32
+    C212 32 208 104 180 148
+    C152 192 116 208 84 216Z"
+    fill="white"/>
+
+  <!-- Leaf vein (subtle overlay) -->
+  <path d="M84 216 C120 180 172 120 212 32"
+    stroke="#315031" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.25"/>
+
+  <!-- Stem -->
+  <path d="M84 216 C72 228 56 240 48 248"
+    stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+</svg>

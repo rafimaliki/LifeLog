@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
     "build": "vite build",
+    "build:icon": "node scripts/build-icon.js",
     "dist": "vite build && electron-builder",
     "preview": "vite preview",
     "electron": "electron ."
@@ -24,6 +25,7 @@
       "electron/**/*",
       "package.json"
     ],
+    "icon": "electron/icon.png",
     "win": {
       "target": "nsis",
       "icon": "electron/icon.ico"
@@ -40,6 +42,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
@@ -48,6 +51,7 @@
     "cross-env": "^10.1.0",
     "electron": "^34.3.3",
     "electron-builder": "^26.8.1",
+    "png-to-ico": "^3.0.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "vite": "^6.2.5",

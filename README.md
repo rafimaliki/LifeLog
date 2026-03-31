@@ -127,13 +127,13 @@ LifeLog supports importing a full day plan from an LLM like ChatGPT. Ask your LL
 
 ### Field reference
 
-| Field | Required | Values |
-|-------|----------|--------|
-| `date` | optional | `YYYY-MM-DD` — if present, imports into that date; otherwise uses the selected date in the app |
-| `type` | required | `wake-up` · `meal` · `exercise` · `other` |
-| `label` | required | Display name for the entry |
-| `time` | optional | `HH:MM` (24-hour) |
-| `plan` | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` for the dashboard to pick them up |
+| Field   | Required | Values                                                                                              |
+| ------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `date`  | optional | `YYYY-MM-DD` — if present, imports into that date; otherwise uses the selected date in the app      |
+| `type`  | required | `wake-up` · `meal` · `exercise` · `other`                                                           |
+| `label` | required | Display name for the entry                                                                          |
+| `time`  | optional | `HH:MM` (24-hour)                                                                                   |
+| `plan`  | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` for the dashboard to pick them up |
 
 ### Import behavior
 

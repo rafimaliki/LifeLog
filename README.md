@@ -84,7 +84,7 @@ LifeLog supports importing a full day plan from an LLM like ChatGPT. Ask your LL
 
 ### Prompt to give ChatGPT
 
-> Act as my personal trainer and nutritionist. Give me a full day plan for [date] in the following JSON format. Set daily nutrition targets in the `targets` block and include each meal's calorie/protein/carb breakdown in the plan string. Add workouts, wake-up, sleep, and any other habits as entries.
+Use the full prompt in [PROMPT.MD](PROMPT.MD) and paste it into your LLM as the instruction/context.
 
 ### JSON Format
 

@@ -1,6 +1,7 @@
-const { contextBridge } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron')
 
-// Expose safe APIs to renderer process here as needed
 contextBridge.exposeInMainWorld('electronAPI', {
   platform: process.platform,
+  loadData: () => ipcRenderer.invoke('load-data'),
+  saveData: (data) => ipcRenderer.invoke('save-data', data),
 })

@@ -1,7 +1,29 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
+const fs = require('fs')
 
 const isDev = process.env.NODE_ENV !== 'production'
+
+function getDataPath() {
+  const dir = path.join(app.getPath('userData'), 'lifelog')
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  return path.join(dir, 'data.json')
+}
+
+ipcMain.handle('load-data', () => {
+  const filePath = getDataPath()
+  if (!fs.existsSync(filePath)) return {}
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'))
+  } catch {
+    return {}
+  }
+})
+
+ipcMain.handle('save-data', (_event, data) => {
+  const filePath = getDataPath()
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+})
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -33,7 +55,6 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow()
-
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

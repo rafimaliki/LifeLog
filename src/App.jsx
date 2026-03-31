@@ -1,34 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Calendar from './components/Calendar'
 import Dashboard from './components/Dashboard'
 import Timeline from './components/Timeline'
-import { MOCK_ENTRIES } from './data/mockData'
+import { loadData, saveData } from './storage'
+import { computeStats } from './stats'
 
 function toDateKey(date) {
   return date.toISOString().slice(0, 10)
 }
 
-const INITIAL_DATA = {
-  [toDateKey(new Date())]: MOCK_ENTRIES,
-}
-
-const PLACEHOLDER_STATS = {
-  calories: { planned: 2200, actual: 760 },
-  protein: { planned: 150, actual: 35 },
-  carbs: { planned: 250, actual: 118 },
-  consistency: 68,
-  streak: 4,
-}
-
 export default function App() {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [data, setData] = useState(INITIAL_DATA)
+  const [data, setData] = useState({})
+  const [loaded, setLoaded] = useState(false)
+
+  // Load persisted data on mount
+  useEffect(() => {
+    loadData().then((saved) => {
+      setData(saved ?? {})
+      setLoaded(true)
+    })
+  }, [])
+
+  // Save whenever data changes (after initial load)
+  useEffect(() => {
+    if (!loaded) return
+    saveData(data)
+  }, [data, loaded])
 
   const dateKey = toDateKey(selectedDate)
+  const todayKey = toDateKey(new Date())
   const entries = data[dateKey] ?? []
 
-  const updateEntries = (newEntries) =>
+  const updateEntries = useCallback((newEntries) => {
     setData((d) => ({ ...d, [dateKey]: newEntries }))
+  }, [dateKey])
 
   const handleUpdate = (updated) =>
     updateEntries(entries.map((e) => (e.id === updated.id ? updated : e)))
@@ -38,6 +44,16 @@ export default function App() {
 
   const handleDelete = (id) =>
     updateEntries(entries.filter((e) => e.id !== id))
+
+  const stats = computeStats(data, todayKey)
+
+  if (!loaded) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-sage-50">
+        <p className="text-sage-400 text-sm">Loading…</p>
+      </div>
+    )
+  }
 
   return (
     <div className="h-screen flex bg-sage-50 overflow-hidden font-sans">
@@ -53,7 +69,7 @@ export default function App() {
         <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
         {/* Dashboard */}
-        <Dashboard stats={PLACEHOLDER_STATS} />
+        <Dashboard stats={stats} />
       </aside>
 
       {/* Main content */}

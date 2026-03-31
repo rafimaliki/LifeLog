@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { ENTRY_META } from '../data/mockData'
+import ConfirmModal from './ConfirmModal'
 
 function InlineField({ label, value, placeholder, onSave }) {
   const [editing, setEditing] = useState(false)
@@ -59,6 +60,7 @@ function InlineField({ label, value, placeholder, onSave }) {
 
 export default function TimelineCard({ entry, onUpdate, onDelete }) {
   const meta = ENTRY_META[entry.type] ?? ENTRY_META.other
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const update = (key, val) => onUpdate({ ...entry, [key]: val })
 
@@ -74,7 +76,7 @@ export default function TimelineCard({ entry, onUpdate, onDelete }) {
 
         {/* Delete button — visible on hover */}
         <button
-          onClick={() => onDelete(entry.id)}
+          onClick={() => setConfirmDelete(true)}
           className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-full text-sage-300 hover:text-red-400 hover:bg-red-50 transition-all text-xs mr-1"
           title="Delete entry"
         >
@@ -117,6 +119,14 @@ export default function TimelineCard({ entry, onUpdate, onDelete }) {
           onSave={(val) => update('actual', val)}
         />
       </div>
+
+      {confirmDelete && (
+        <ConfirmModal
+          message={`Delete "${entry.label}"?`}
+          onConfirm={() => onDelete(entry.id)}
+          onClose={() => setConfirmDelete(false)}
+        />
+      )}
     </div>
   )
 }

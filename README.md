@@ -1,5 +1,18 @@
 # LifeLog
 
+<p align="center">
+  <img src="assets/app.png" alt="LifeLog app preview" width="420" style="border-radius:5px; box-shadow:0 12px 30px rgba(0,0,0,0.18);" />
+</p>
+
+<p align="center">
+  <strong style="font-size:1.6em">LifeLog — Make healthy habits stick</strong><br/>
+  <em>Plan your day, track what happened, and build lasting routines.</em>
+</p>
+
+<p align="center">
+  <a href="#build--install" style="margin-right:10px; text-decoration:none;">Get the app</a> · <a href="#what-it-does" style="text-decoration:none;">See features</a>
+</p>
+
 A desktop app for tracking daily health habits using a **plan vs actual** system.
 
 ## What it does
@@ -132,16 +145,16 @@ LifeLog supports importing a full day plan from an LLM like ChatGPT. Ask your LL
 
 ### Field reference
 
-| Field | Required | Values |
-|-------|----------|--------|
-| `date` | optional | `YYYY-MM-DD` — imports into that date; otherwise uses the selected date in the app |
-| `targets.calories` | optional | Daily calorie target (kcal) |
-| `targets.protein` | optional | Daily protein target (g) |
-| `targets.carbs` | optional | Daily carb target (g) |
-| `type` | required | `wake-up` · `meal` · `exercise` · `other` |
-| `label` | required | Display name for the entry |
-| `time` | optional | `HH:MM` (24-hour) |
-| `plan` | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` so the dashboard can parse them |
+| Field              | Required | Values                                                                                            |
+| ------------------ | -------- | ------------------------------------------------------------------------------------------------- |
+| `date`             | optional | `YYYY-MM-DD` — imports into that date; otherwise uses the selected date in the app                |
+| `targets.calories` | optional | Daily calorie target (kcal)                                                                       |
+| `targets.protein`  | optional | Daily protein target (g)                                                                          |
+| `targets.carbs`    | optional | Daily carb target (g)                                                                             |
+| `type`             | required | `wake-up` · `meal` · `exercise` · `other`                                                         |
+| `label`            | required | Display name for the entry                                                                        |
+| `time`             | optional | `HH:MM` (24-hour)                                                                                 |
+| `plan`             | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` so the dashboard can parse them |
 
 ### Import behavior
 

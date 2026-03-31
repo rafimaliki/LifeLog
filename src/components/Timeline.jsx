@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import TimelineCard from './TimelineCard'
+import AddEntryModal from './AddEntryModal'
 
-export default function Timeline({ date, entries }) {
+export default function Timeline({ date, entries, onUpdate, onAdd, onDelete }) {
+  const [showModal, setShowModal] = useState(false)
+
   const label = date.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -9,6 +13,8 @@ export default function Timeline({ date, entries }) {
 
   const followed = entries.filter((e) => e.followed).length
   const total = entries.length
+
+  const sorted = [...entries].sort((a, b) => a.time.localeCompare(b.time))
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto">
@@ -33,7 +39,10 @@ export default function Timeline({ date, entries }) {
           </div>
           <p className="text-sage-600 font-medium">No entries yet</p>
           <p className="text-sage-400 text-sm mt-1">Add your first plan for the day</p>
-          <button className="mt-5 px-5 py-2.5 bg-sage-500 hover:bg-sage-600 text-white text-sm font-medium rounded-xl transition-colors">
+          <button
+            onClick={() => setShowModal(true)}
+            className="mt-5 px-5 py-2.5 bg-sage-500 hover:bg-sage-600 text-white text-sm font-medium rounded-xl transition-colors"
+          >
             + Add Entry
           </button>
         </div>
@@ -42,13 +51,29 @@ export default function Timeline({ date, entries }) {
       {/* Entry list */}
       {entries.length > 0 && (
         <div className="flex flex-col gap-3 pb-6">
-          {entries.map((entry) => (
-            <TimelineCard key={entry.id} entry={entry} />
+          {sorted.map((entry) => (
+            <TimelineCard
+              key={entry.id}
+              entry={entry}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
           ))}
-          <button className="mt-1 px-5 py-2.5 bg-sage-100 hover:bg-sage-200 text-sage-700 text-sm font-medium rounded-xl transition-colors self-start">
+          <button
+            onClick={() => setShowModal(true)}
+            className="mt-1 px-5 py-2.5 bg-sage-100 hover:bg-sage-200 text-sage-700 text-sm font-medium rounded-xl transition-colors self-start"
+          >
             + Add Entry
           </button>
         </div>
+      )}
+
+      {/* Add entry modal */}
+      {showModal && (
+        <AddEntryModal
+          onAdd={onAdd}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   )

@@ -4,6 +4,14 @@ import Dashboard from './components/Dashboard'
 import Timeline from './components/Timeline'
 import { MOCK_ENTRIES } from './data/mockData'
 
+function toDateKey(date) {
+  return date.toISOString().slice(0, 10)
+}
+
+const INITIAL_DATA = {
+  [toDateKey(new Date())]: MOCK_ENTRIES,
+}
+
 const PLACEHOLDER_STATS = {
   calories: { planned: 2200, actual: 760 },
   protein: { planned: 150, actual: 35 },
@@ -14,6 +22,22 @@ const PLACEHOLDER_STATS = {
 
 export default function App() {
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [data, setData] = useState(INITIAL_DATA)
+
+  const dateKey = toDateKey(selectedDate)
+  const entries = data[dateKey] ?? []
+
+  const updateEntries = (newEntries) =>
+    setData((d) => ({ ...d, [dateKey]: newEntries }))
+
+  const handleUpdate = (updated) =>
+    updateEntries(entries.map((e) => (e.id === updated.id ? updated : e)))
+
+  const handleAdd = (entry) =>
+    updateEntries([...entries, entry])
+
+  const handleDelete = (id) =>
+    updateEntries(entries.filter((e) => e.id !== id))
 
   return (
     <div className="h-screen flex bg-sage-50 overflow-hidden font-sans">
@@ -35,7 +59,13 @@ export default function App() {
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto p-8">
-          <Timeline date={selectedDate} entries={MOCK_ENTRIES} />
+          <Timeline
+            date={selectedDate}
+            entries={entries}
+            onUpdate={handleUpdate}
+            onAdd={handleAdd}
+            onDelete={handleDelete}
+          />
         </div>
       </main>
     </div>

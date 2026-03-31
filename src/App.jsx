@@ -45,6 +45,9 @@ export default function App() {
   const handleDelete = (id) =>
     updateEntries(entries.filter((e) => e.id !== id))
 
+  const handleImport = (newEntries) =>
+    updateEntries(newEntries)
+
   const stats = computeStats(data, todayKey)
 
   if (!loaded) {
@@ -81,6 +84,7 @@ export default function App() {
             onUpdate={handleUpdate}
             onAdd={handleAdd}
             onDelete={handleDelete}
+            onImport={handleImport}
           />
         </div>
       </main>

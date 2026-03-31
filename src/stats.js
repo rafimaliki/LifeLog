@@ -61,7 +61,10 @@ export function computeStats(data, today) {
   const todayMs = new Date(today).getTime()
   for (let i = 0; ; i++) {
     const d = new Date(todayMs - i * 86400000)
-    const key = d.toISOString().slice(0, 10)
+    const y = d.getFullYear()
+    const mo = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const key = `${y}-${mo}-${day}`
     const entries = data[key] ?? []
     if (entries.length === 0 || !entries.some((e) => e.followed)) break
     streak++

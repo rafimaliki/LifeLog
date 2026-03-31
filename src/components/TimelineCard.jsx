@@ -7,6 +7,11 @@ function InlineField({ label, value, placeholder, onSave }) {
   const [draft, setDraft] = useState(value)
   const ref = useRef(null)
 
+  // Sync draft when value changes externally (e.g. plan copied to actual on followed)
+  useEffect(() => {
+    if (!editing) setDraft(value)
+  }, [value])
+
   useEffect(() => {
     if (editing && ref.current) {
       ref.current.focus()
@@ -87,7 +92,15 @@ export default function TimelineCard({ entry, onUpdate, onDelete }) {
         <label className="flex items-center gap-1.5 cursor-pointer group/check">
           <button
             type="button"
-            onClick={() => update('followed', !entry.followed)}
+            onClick={() => {
+              const nowFollowed = !entry.followed
+              const updates = { followed: nowFollowed }
+              // When checking followed, copy plan → actual if actual is empty
+              if (nowFollowed && !entry.actual.trim() && entry.plan.trim()) {
+                updates.actual = entry.plan
+              }
+              onUpdate({ ...entry, ...updates })
+            }}
             className={`w-4 h-4 rounded flex items-center justify-center border-2 transition-colors
               ${entry.followed
                 ? 'bg-sage-500 border-sage-500'

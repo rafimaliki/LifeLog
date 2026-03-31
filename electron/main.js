@@ -1,8 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV === 'development'
 
 function getDataPath() {
   const dir = path.join(app.getPath('userData'), 'lifelog')
@@ -26,6 +26,9 @@ ipcMain.handle('save-data', (_event, data) => {
 })
 
 function createWindow() {
+  // Remove the native menu bar entirely
+  Menu.setApplicationMenu(null)
+
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -36,7 +39,6 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
-    titleBarStyle: 'hiddenInset',
     backgroundColor: '#f4f7f4',
     show: false,
   })

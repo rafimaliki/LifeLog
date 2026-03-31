@@ -6,12 +6,35 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
     "build": "vite build",
+    "dist": "vite build && electron-builder",
     "preview": "vite preview",
     "electron": "electron ."
   },
   "keywords": [],
   "author": "Ahmad Rafi Maliki",
   "license": "MIT",
+  "build": {
+    "appId": "com.rafimlk.lifelog",
+    "productName": "LifeLog",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -24,6 +47,7 @@
     "concurrently": "^9.1.2",
     "cross-env": "^10.1.0",
     "electron": "^34.3.3",
+    "electron-builder": "^26.8.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "vite": "^6.2.5",

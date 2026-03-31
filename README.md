@@ -15,14 +15,43 @@ There are no restrictions on when you fill things in. You can plan ahead, log in
 - **Tailwind CSS** — utility-first styling
 - **Electron** — desktop shell
 
-## How to Run
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-This starts the Vite dev server and opens the Electron window automatically.
+Starts the Vite dev server and opens the Electron window automatically. Hot reload is enabled — changes in `src/` reflect instantly.
+
+## Build & Install
+
+### 1. Build the web assets
+
+```bash
+npm run build
+```
+
+Compiles React + Tailwind into `dist/`. Required before packaging.
+
+### 2. Package into an installer
+
+```bash
+npm run dist
+```
+
+Runs `vite build` then `electron-builder`. The output goes into `release/`:
+
+```
+release/
+  LifeLog Setup 1.0.0.exe   ← Windows installer (NSIS)
+```
+
+### 3. Install
+
+Run `LifeLog Setup 1.0.0.exe`. The installer lets you choose the install directory and creates a desktop shortcut and Start Menu entry.
+
+> **Note:** The first build downloads Electron binaries (~100 MB) and may take a few minutes.
 
 ## Storage
 

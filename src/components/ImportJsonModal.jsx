@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const VALID_TYPES = new Set(['wake-up', 'meal', 'exercise', 'other'])
 
-function parseEntries(raw) {
+function parsePlan(raw) {
   let parsed
   try {
     parsed = JSON.parse(raw)
@@ -15,7 +15,7 @@ function parseEntries(raw) {
   if (!Array.isArray(list)) throw new Error('Expected an "entries" array.')
   if (list.length === 0) throw new Error('The entries array is empty.')
 
-  return list.map((item, i) => {
+  const entries = list.map((item, i) => {
     if (!item.label?.trim()) throw new Error(`Entry ${i + 1} is missing a "label".`)
     if (!VALID_TYPES.has(item.type)) {
       throw new Error(
@@ -32,6 +32,20 @@ function parseEntries(raw) {
       followed: false,
     }
   })
+
+  // Parse optional targets block
+  let targets = null
+  if (!Array.isArray(parsed) && parsed.targets) {
+    const t = parsed.targets
+    const calories = parseInt(t.calories, 10)
+    const protein  = parseInt(t.protein,  10)
+    const carbs    = parseInt(t.carbs,    10)
+    if (!isNaN(calories) && !isNaN(protein) && !isNaN(carbs)) {
+      targets = { calories, protein, carbs }
+    }
+  }
+
+  return { entries, targets }
 }
 
 export default function ImportJsonModal({ onImport, onClose }) {
@@ -41,8 +55,8 @@ export default function ImportJsonModal({ onImport, onClose }) {
   const handleImport = () => {
     setError('')
     try {
-      const entries = parseEntries(raw)
-      onImport(entries)
+      const result = parsePlan(raw)
+      onImport(result)
       onClose()
     } catch (e) {
       setError(e.message)

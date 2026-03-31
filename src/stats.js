@@ -21,42 +21,52 @@ function extractNutrition(text) {
   }
 }
 
+/** Normalize a day value — handles both old array format and new object format */
+function getDayEntries(dayVal) {
+  if (!dayVal) return []
+  if (Array.isArray(dayVal)) return dayVal
+  return dayVal.entries ?? []
+}
+
+function getDayTargets(dayVal) {
+  if (!dayVal || Array.isArray(dayVal)) return null
+  return dayVal.targets ?? null
+}
+
+const DEFAULT_TARGETS = { calories: 2200, protein: 150, carbs: 250 }
+
 /**
  * Compute dashboard stats from all stored data.
- * @param {Object} data  - { [dateKey]: Entry[] }
+ * @param {Object} data  - { [dateKey]: { entries, targets } | Entry[] }
  * @param {string} today - 'YYYY-MM-DD'
  */
 export function computeStats(data, today) {
-  const todayEntries = data[today] ?? []
+  const todayVal = data[today]
+  const todayEntries = getDayEntries(todayVal)
+  const todayTargets = getDayTargets(todayVal) ?? DEFAULT_TARGETS
 
-  // Today's nutrition from meal entries
-  const plannedNutrition = { calories: 0, protein: 0, carbs: 0 }
-  const actualNutrition  = { calories: 0, protein: 0, carbs: 0 }
-
+  // Today's nutrition from meal entries (actual values only)
+  const actualNutrition = { calories: 0, protein: 0, carbs: 0 }
   for (const e of todayEntries) {
     if (e.type !== 'meal') continue
-    const p = extractNutrition(e.plan)
     const a = extractNutrition(e.actual)
-    plannedNutrition.calories += p.calories
-    plannedNutrition.protein  += p.protein
-    plannedNutrition.carbs    += p.carbs
-    actualNutrition.calories  += a.calories
-    actualNutrition.protein   += a.protein
-    actualNutrition.carbs     += a.carbs
+    actualNutrition.calories += a.calories
+    actualNutrition.protein  += a.protein
+    actualNutrition.carbs    += a.carbs
   }
 
-  // Consistency = % of days that have at least one entry where all entries are followed
+  // Consistency = % of days with entries where every entry is followed
   const allKeys = Object.keys(data).sort()
-  const daysWithEntries = allKeys.filter((k) => (data[k] ?? []).length > 0)
+  const daysWithEntries = allKeys.filter((k) => getDayEntries(data[k]).length > 0)
   const daysFollowed = daysWithEntries.filter((k) => {
-    const entries = data[k]
+    const entries = getDayEntries(data[k])
     return entries.length > 0 && entries.every((e) => e.followed)
   })
   const consistency = daysWithEntries.length > 0
     ? Math.round((daysFollowed.length / daysWithEntries.length) * 100)
     : 0
 
-  // Streak = consecutive days up to and including today that have ≥1 followed entry
+  // Streak = consecutive days up to and including today with ≥1 followed entry
   let streak = 0
   const todayMs = new Date(today).getTime()
   for (let i = 0; ; i++) {
@@ -65,15 +75,15 @@ export function computeStats(data, today) {
     const mo = String(d.getMonth() + 1).padStart(2, '0')
     const day = String(d.getDate()).padStart(2, '0')
     const key = `${y}-${mo}-${day}`
-    const entries = data[key] ?? []
+    const entries = getDayEntries(data[key])
     if (entries.length === 0 || !entries.some((e) => e.followed)) break
     streak++
   }
 
   return {
-    calories: { planned: plannedNutrition.calories || 2200, actual: actualNutrition.calories },
-    protein:  { planned: plannedNutrition.protein  || 150,  actual: actualNutrition.protein  },
-    carbs:    { planned: plannedNutrition.carbs    || 250,  actual: actualNutrition.carbs    },
+    calories: { planned: todayTargets.calories, actual: actualNutrition.calories },
+    protein:  { planned: todayTargets.protein,  actual: actualNutrition.protein  },
+    carbs:    { planned: todayTargets.carbs,     actual: actualNutrition.carbs    },
     consistency,
     streak,
   }

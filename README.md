@@ -71,13 +71,18 @@ LifeLog supports importing a full day plan from an LLM like ChatGPT. Ask your LL
 
 ### Prompt to give ChatGPT
 
-> Act as my personal trainer and nutritionist. Give me a full day plan for [date] in the following JSON format. Include meals with calorie/protein/carb counts in the plan string, workouts, sleep, and any other habits.
+> Act as my personal trainer and nutritionist. Give me a full day plan for [date] in the following JSON format. Set daily nutrition targets in the `targets` block and include each meal's calorie/protein/carb breakdown in the plan string. Add workouts, wake-up, sleep, and any other habits as entries.
 
 ### JSON Format
 
 ```json
 {
   "date": "2026-03-31",
+  "targets": {
+    "calories": 2200,
+    "protein": 150,
+    "carbs": 250
+  },
   "entries": [
     {
       "type": "wake-up",
@@ -127,15 +132,19 @@ LifeLog supports importing a full day plan from an LLM like ChatGPT. Ask your LL
 
 ### Field reference
 
-| Field   | Required | Values                                                                                              |
-| ------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `date`  | optional | `YYYY-MM-DD` — if present, imports into that date; otherwise uses the selected date in the app      |
-| `type`  | required | `wake-up` · `meal` · `exercise` · `other`                                                           |
-| `label` | required | Display name for the entry                                                                          |
-| `time`  | optional | `HH:MM` (24-hour)                                                                                   |
-| `plan`  | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` for the dashboard to pick them up |
+| Field | Required | Values |
+|-------|----------|--------|
+| `date` | optional | `YYYY-MM-DD` — imports into that date; otherwise uses the selected date in the app |
+| `targets.calories` | optional | Daily calorie target (kcal) |
+| `targets.protein` | optional | Daily protein target (g) |
+| `targets.carbs` | optional | Daily carb target (g) |
+| `type` | required | `wake-up` · `meal` · `exercise` · `other` |
+| `label` | required | Display name for the entry |
+| `time` | optional | `HH:MM` (24-hour) |
+| `plan` | optional | Free text. Include nutrition as `Xkcal`, `Xg protein`, `Xg carbs` so the dashboard can parse them |
 
 ### Import behavior
 
 - Importing **replaces** all existing entries for that day.
-- You can still add, edit, or delete entries manually after importing.
+- If `targets` is present, it also updates the day's nutrition targets.
+- You can still add, edit, or delete entries and adjust targets manually after importing.

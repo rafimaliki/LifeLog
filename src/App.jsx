@@ -2,13 +2,14 @@ import { useState } from 'react'
 import Calendar from './components/Calendar'
 import Dashboard from './components/Dashboard'
 import Timeline from './components/Timeline'
+import { MOCK_ENTRIES } from './data/mockData'
 
 const PLACEHOLDER_STATS = {
-  calories: { planned: 2200, actual: 0 },
-  protein: { planned: 150, actual: 0 },
-  carbs: { planned: 250, actual: 0 },
-  consistency: 0,
-  streak: 0,
+  calories: { planned: 2200, actual: 760 },
+  protein: { planned: 150, actual: 35 },
+  carbs: { planned: 250, actual: 118 },
+  consistency: 68,
+  streak: 4,
 }
 
 export default function App() {
@@ -34,7 +35,7 @@ export default function App() {
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto p-8">
-          <Timeline date={selectedDate} entries={[]} />
+          <Timeline date={selectedDate} entries={MOCK_ENTRIES} />
         </div>
       </main>
     </div>

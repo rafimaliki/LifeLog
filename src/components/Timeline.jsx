@@ -1,3 +1,5 @@
+import TimelineCard from './TimelineCard'
+
 export default function Timeline({ date, entries }) {
   const label = date.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -5,12 +7,22 @@ export default function Timeline({ date, entries }) {
     day: 'numeric',
   })
 
+  const followed = entries.filter((e) => e.followed).length
+  const total = entries.length
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full max-w-2xl mx-auto">
       {/* Date heading */}
-      <div className="mb-5">
-        <h2 className="text-xl font-semibold text-sage-800">{label}</h2>
-        <p className="text-sm text-sage-400 mt-0.5">Plan your day and track what actually happened</p>
+      <div className="mb-5 flex items-end justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-sage-800">{label}</h2>
+          <p className="text-sm text-sage-400 mt-0.5">Plan your day and track what actually happened</p>
+        </div>
+        {total > 0 && (
+          <span className="text-sm text-sage-500 font-medium">
+            {followed}/{total} followed
+          </span>
+        )}
       </div>
 
       {/* Empty state */}
@@ -29,14 +41,9 @@ export default function Timeline({ date, entries }) {
 
       {/* Entry list */}
       {entries.length > 0 && (
-        <div className="flex flex-col gap-3 overflow-y-auto pr-1">
-          {entries.map((entry, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl p-4 shadow-sm border border-sage-100"
-            >
-              <p className="text-sm font-medium text-sage-700">{entry.label}</p>
-            </div>
+        <div className="flex flex-col gap-3 pb-6">
+          {entries.map((entry) => (
+            <TimelineCard key={entry.id} entry={entry} />
           ))}
           <button className="mt-1 px-5 py-2.5 bg-sage-100 hover:bg-sage-200 text-sage-700 text-sm font-medium rounded-xl transition-colors self-start">
             + Add Entry
